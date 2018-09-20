@@ -1,4 +1,3 @@
-// Test Git local
 #ifndef DEFS_H
 #define DEFS_H
 
