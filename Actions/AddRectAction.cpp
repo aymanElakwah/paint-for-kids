@@ -1,8 +1,6 @@
 #include "AddRectAction.h"
 #include "..\Figures\CRectangle.h"
-
 #include "..\ApplicationManager.h"
-
 #include "..\GUI\input.h"
 #include "..\GUI\Output.h"
 
@@ -25,7 +23,7 @@ void AddRectAction::ReadActionParameters()
 	//Read 2nd corner and store in point P2
 	pIn->GetPointClicked(P2.x, P2.y);
 
-	RectGfxInfo.isFilled = false;	//default is not filled
+	RectGfxInfo.isFilled = UI.filled;
 	//get drawing, filling colors and pen width from the interface
 	RectGfxInfo.DrawClr = pOut->getCrntDrawColor();
 	RectGfxInfo.FillClr = pOut->getCrntFillColor();
@@ -40,6 +38,9 @@ void AddRectAction::Execute()
 	//This action needs to read some parameters first
 	ReadActionParameters();
 	
+	if (P1.x == P2.x || P1.y == P2.y)	//Doesn't draw the rectangle if it is given the same x or y -coordinates twice
+		return;
+
 	//Create a rectangle with the parameters read from the user
 	CRectangle *R=new CRectangle(P1, P2, RectGfxInfo);
 
