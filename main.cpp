@@ -1,6 +1,5 @@
 #include "ApplicationManager.h"
 
-
 int main()
 {
 

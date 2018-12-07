@@ -15,10 +15,11 @@ Output::Output()
 	UI.wy = 5;
 
 
-	UI.StatusBarHeight = 50;
+	UI.StatusBarHeight = 35;
 	UI.ToolBarHeight = 32;
 	UI.MenuItemWidth = 65;
 
+	UI.filled = false;
 	UI.DrawColor = BLUE;	//Drawing color
 	UI.FillColor = GREEN;	//Filling color
 	UI.MsgColor = RED;		//Messages color
@@ -30,73 +31,19 @@ Output::Output()
 	UI.colorSide = UI.ToolBarHeight;
 	UI.numberOfColors = 14; //UI.width / UI.colorSide + 1;
 	UI.colors.push_back(BLACK);
-	UI.colorNames.push_back("Black");
 	UI.colors.push_back(WHITE);
-	UI.colorNames.push_back("White");
 	UI.colors.push_back(RED);
-	UI.colorNames.push_back("Red");
 	UI.colors.push_back(GREEN);
-	UI.colorNames.push_back("Green");
 	UI.colors.push_back(BLUE);
-	UI.colorNames.push_back("Blue");
-	/*for (int i = 0; i < UI.numberOfColors - 5; i++) {
-		cout << "UI.colors.push_back(color(" << rand() % 255 << ", " << rand() % 255 << ", " << rand() % 255 << "));" << endl;
-		UI.colors.push_back(color(rand() % 255, rand() % 255, rand() % 255));
-	}
-	UI.colors.push_back(color(214, 107, 41));
-	UI.colors.push_back(color(187, 33, 3));
-	UI.colors.push_back(color(16, 252, 76));
-	UI.colors.push_back(color(6, 81, 237));
-	UI.colors.push_back(color(81, 142, 37));
-	UI.colors.push_back(color(236, 51, 92));
-	UI.colors.push_back(color(205, 34, 167));
-	UI.colors.push_back(color(78, 243, 2));
-	UI.colors.push_back(color(47, 238, 203));
-	UI.colors.push_back(color(53, 109, 147));
-	UI.colors.push_back(color(5, 230, 76));
-	UI.colors.push_back(color(139, 17, 115));
-	UI.colors.push_back(color(145, 99, 80));
-	UI.colors.push_back(color(249, 233, 168));
-	UI.colors.push_back(color(121, 110, 141));
-	UI.colors.push_back(color(146, 54, 114));
-	UI.colors.push_back(color(234, 42, 53));
-	UI.colors.push_back(color(9, 78, 49));
-	UI.colors.push_back(color(176, 201, 53));
-	UI.colors.push_back(color(2, 219, 150));
-	UI.colors.push_back(color(236, 30, 16));
-	UI.colors.push_back(color(206, 19, 195));
-	UI.colors.push_back(color(196, 49, 111));
-	UI.colors.push_back(color(157, 117, 157));
-	UI.colors.push_back(color(79, 239, 155));
-	UI.colors.push_back(color(221, 211, 47));
-	UI.colors.push_back(color(147, 206, 135));
-	UI.colors.push_back(color(128, 137, 84));
-	UI.colors.push_back(color(91, 125, 32));
-	UI.colors.push_back(color(63, 51, 6));
-	UI.colors.push_back(color(53, 144, 121));
-	UI.colors.push_back(color(22, 218, 15));
-	UI.colors.push_back(color(212, 43, 168));
-	UI.colors.push_back(color(29, 79, 118));
-	UI.colors.push_back(color(199, 149, 200));
-	*/
 	UI.colors.push_back(BISQUE);
-	UI.colorNames.push_back("Bisque");
 	UI.colors.push_back(AZURE);
-	UI.colorNames.push_back("Azure");
 	UI.colors.push_back(DIMGREY);
-	UI.colorNames.push_back("Dim Grey");
 	UI.colors.push_back(NAVY);
-	UI.colorNames.push_back("Navy");
 	UI.colors.push_back(DODGERBLUE);
-	UI.colorNames.push_back("Dodge Blue");
 	UI.colors.push_back(MEDIUMTURQUOISE);
-	UI.colorNames.push_back("Medium Turquoise");
 	UI.colors.push_back(SEAGREEN);
-	UI.colorNames.push_back("Sea Green");
 	UI.colors.push_back(LIMEGREEN);
-	UI.colorNames.push_back("Lime Green");
 	UI.colors.push_back(GOLD);
-	UI.colorNames.push_back("Gold");
 	
 
 	//Create the output window
@@ -106,7 +53,6 @@ Output::Output()
 
 	CreateDrawToolBar();
 	CreateStatusBar();
-	colorSelectType = NOTHING;
 }
 
 
@@ -136,8 +82,9 @@ void Output::CreateStatusBar() const
 	pWind->DrawRectangle(0, UI.height - UI.StatusBarHeight, UI.width, UI.height);
 }
 //////////////////////////////////////////////////////////////////////////////////////////
-void Output::ClearStatusBar() const
+void Output::ClearStatusBar()
 {
+	status = "";
 	//Clear Status bar by drawing a filled white rectangle
 	pWind->SetPen(UI.StatusBarColor, 1);
 	pWind->SetBrush(UI.StatusBarColor);
@@ -160,13 +107,14 @@ void Output::read_directory(string name, vector<string> &v) const
 	}
 }
 
-void Output::drawToolBar(string dir) const {
-	clearToolBar();
+void Output::drawToolBar(string dir, int i) const {
+	if(i == 0)
+		clearToolBar();
 	vector<string> fileNames;
 	read_directory("images\\MenuItems\\" + dir, fileNames);
 	//Draw menu item one image at a time
 	int size = fileNames.size();
-	for (int i = 0; i < size; i++)
+	for (; i < size; i++)
 		pWind->DrawImage(fileNames[i], i*UI.MenuItemWidth, 0, UI.MenuItemWidth, UI.ToolBarHeight);
 	//Draw a line under the toolbar
 	pWind->SetPen(RED, 1);
@@ -179,8 +127,7 @@ void Output::clearToolBar() const {
 	pWind->DrawRectangle(0, 0, UI.width, UI.ToolBarHeight);
 }
 
-void Output::drawColorPalette(ColorSelectType colorSelectType) {
-	UI.colorSelectType = colorSelectType;
+void Output::drawColorPalette() {
 	clearToolBar();
 	for (int i = 0; i < UI.numberOfColors; i++) {
 		pWind->SetBrush(UI.colors[i]);
@@ -188,18 +135,12 @@ void Output::drawColorPalette(ColorSelectType colorSelectType) {
 	}
 }
 
-ColorSelectType Output::getColorSelectType() {
-	return colorSelectType;
-}
-
-void Output::setColorSelectType(ColorSelectType colorSelectType) {
-	this->colorSelectType = colorSelectType;
-}
-
 void Output::CreateDrawToolBar() const
 {
 	UI.InterfaceMode = MODE_DRAW;
-	drawToolBar("Draw_Mode");
+	clearToolBar();
+	pWind->DrawImage("images\\MenuItems\\Draw_Mode\\01\\" + to_string(UI.filled) + ".jpg", 0, 0, UI.MenuItemWidth, UI.ToolBarHeight);
+	drawToolBar("Draw_Mode", 1);
 	return;
 
 	//You can draw the tool bar icons in any way you want.
@@ -208,10 +149,10 @@ void Output::CreateDrawToolBar() const
 	//First prepare List of images for each menu item
 	//To control the order of these images in the menu, 
 	//reoder them in UI_Info.h ==> enum DrawMenuItem
-	string MenuItemImages[DRAW_ITM_COUNT];
-	MenuItemImages[ITM_RECT] = "images\\MenuItems\\Menu_Rect.jpg";
-	MenuItemImages[ITM_CIRC] = "images\\MenuItems\\Menu_Circ.jpg";
-	MenuItemImages[ITM_EXIT_DRAW] = "images\\MenuItems\\Menu_Exit.jpg";
+	//string MenuItemImages[DRAW_ITM_COUNT];
+	//MenuItemImages[ITM_RECT] = "images\\MenuItems\\Menu_Rect.jpg";
+	//MenuItemImages[ITM_CIRC] = "images\\MenuItems\\Menu_Circ.jpg";
+	//MenuItemImages[ITM_EXIT_DRAW] = "images\\MenuItems\\Menu_Exit.jpg";
 
 	//TODO: Prepare images for each menu item and add it to the list
 
@@ -225,6 +166,15 @@ void Output::CreatePlayToolBar() const
 	return;
 	///TODO: write code to create Play mode menu
 }
+
+void Output::drawCurrentToolBar() const {
+	if (UI.InterfaceMode == MODE_DRAW) {
+		CreateDrawToolBar();
+	}
+	else {
+		CreatePlayToolBar();
+	}
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void Output::ClearDrawArea() const
@@ -236,13 +186,17 @@ void Output::ClearDrawArea() const
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void Output::PrintMessage(string msg) const	//Prints a message on status bar
+void Output::PrintMessage(string msg)	//Prints a message on status bar
 {
 	ClearStatusBar();	//First clear the status bar
-
+	status = msg;
 	pWind->SetPen(UI.MsgColor, 50);
 	pWind->SetFont(20, BOLD, BY_NAME, "Arial");
-	pWind->DrawString(10, UI.height - (int)(UI.StatusBarHeight / 1.5), msg);
+	pWind->DrawString(10, UI.height - UI.StatusBarHeight, msg);
+}
+
+void Output::refreshStatus() {
+	PrintMessage(status);
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -290,75 +244,69 @@ void Output::DrawRect(Point P1, Point P2, GfxInfo RectGfxInfo, bool selected) co
 
 }
 
-void Output::drawline(Point p1, Point p2, GfxInfo linegfxinfo, bool selected) const
+void Output::DrawLine(Point P1, Point P2, GfxInfo lineGfxInfo, bool selected) const
 {
 	color DrawingClr;
 	if (selected)
 		DrawingClr = UI.HighlightColor; //Figure should be drawn highlighted
 	else
-		DrawingClr = linegfxinfo.DrawClr;
+		DrawingClr = lineGfxInfo.DrawClr;
 
 	pWind->SetPen(DrawingClr, 1);
 	drawstyle style;
-	if (linegfxinfo.isFilled)
+	/*if (lineGfxInfo.isFilled)
 	{
 		style = FILLED;
-		pWind->SetBrush(linegfxinfo.FillClr);
+		pWind->SetBrush(lineGfxInfo.FillClr);		//Is that okay??????????????
 	}
-	else
+	else*/
 		style = FRAME;
 
 
-	pWind->DrawLine(p1.x, p1.y, p2.x, p2.y, style);
+	pWind->DrawLine(P1.x, P1.y, P2.x, P2.y, style);
 }
-void Output::drawtriangle(Point p1, Point p2, Point p3, GfxInfo trianglegfxinfo, bool selected) const
+
+void Output::DrawTriangle(Point P1, Point P2, Point P3, GfxInfo triangleGfxInfo, bool selected) const
 {
 	color DrawingClr;
 	if (selected)
 		DrawingClr = UI.HighlightColor; //Figure should be drawn highlighted
 	else
-		DrawingClr = trianglegfxinfo.DrawClr;
+		DrawingClr = triangleGfxInfo.DrawClr;
 
 	pWind->SetPen(DrawingClr, 1);
 	drawstyle style;
-	if (trianglegfxinfo.isFilled)
+	if (triangleGfxInfo.isFilled)
 	{
 		style = FILLED;
-		pWind->SetBrush(trianglegfxinfo.FillClr);
+		pWind->SetBrush(triangleGfxInfo.FillClr);
 	}
 	else
 		style = FRAME;
 
 
-	pWind->DrawTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, style);
+	pWind->DrawTriangle(P1.x, P1.y, P2.x, P2.y, P3.x, P3.y, style);
 }
-void Output::drawcircle(Point p1, Point p2, GfxInfo circlegfxinfo, bool selected) const
+
+void Output::DrawCircle(Point P1, int R, GfxInfo circleGfxInfo, bool selected) const
 {
 	color DrawingClr;
 	if (selected)
 		DrawingClr = UI.HighlightColor; //Figure should be drawn highlighted
 	else
-		DrawingClr = circlegfxinfo.DrawClr;
+		DrawingClr = circleGfxInfo.DrawClr;
 
 	pWind->SetPen(DrawingClr, 1);
 	drawstyle style;
-	if (circlegfxinfo.isFilled)
+	if (circleGfxInfo.isFilled)
 	{
 		style = FILLED;
-		pWind->SetBrush(circlegfxinfo.FillClr);
+		pWind->SetBrush(circleGfxInfo.FillClr);
 	}
 	else
 		style = FRAME;
 
-	int r = sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
-	pWind->DrawCircle(p1.x, p1.y, r, style);
-	if (UI.InterfaceMode == MODE_DRAW) {
-		CreateDrawToolBar();
-	}
-	else {
-		CreatePlayToolBar();
-	}
-
+	pWind->DrawCircle(P1.x, P1.y, R, style);
 }
 
 

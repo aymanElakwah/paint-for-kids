@@ -18,6 +18,7 @@ enum DrawMenuItem //The items of the Draw menu (you should add more items)
 {
 	//Note: Items are ordered here as they appear in menu
 	//If you want to change the menu items order, change the order here
+	ITM_MODE,
 	ITM_RECT,		//Recangle item in menu
 	ITM_CIRC,		//Circle item in menu
 	ITM_LINE,
@@ -29,26 +30,23 @@ enum DrawMenuItem //The items of the Draw menu (you should add more items)
 	ITM_CUT,
 	ITM_PASTE,
 	ITM_ROTATE,
-	ITM_RESIZE,
+	ITM_TO_BACK,
+	ITM_TO_FRONT,
 	ITM_DEL,
 	ITM_SAVE,
 	ITM_LOAD,
 	ITM_TO_PLAY,
-	
-	
 	//TODO: Add more items names here
-
 	ITM_EXIT_DRAW,		//Exit item
-	
 	DRAW_ITM_COUNT		//no. of menu items ==> This should be the last line in this enum
-	
+
 };
 
 enum PlayMenuItem //The items of the Play menu (you should add more items)
 {
 	//Note: Items are ordered here as they appear in menu
 	//If you want to change the menu items order, change the order here
-	
+
 	//TODO: Add more items names here
 	ITM_TYPE,
 	ITM_FILL,
@@ -58,29 +56,19 @@ enum PlayMenuItem //The items of the Play menu (you should add more items)
 	PLAY_ITM_COUNT		//no. of menu items ==> This should be the last line in this enum	
 };
 
-enum ColorSelectType {
-	NOTHING,
-	FILL,
-	DRAW
-};
-
-
-
-
-
 __declspec(selectany) //This line to prevent "redefinition error"
 
 struct UI_Info	//User Interface Info.
 {
 	GUI_MODE InterfaceMode;
-	
+
 	int	width, height,	    //Window width and height
-		wx , wy,			//Window starting coordinates
+		wx, wy,			//Window starting coordinates
 		StatusBarHeight,	//Status Bar Height
 		ToolBarHeight,		//Tool Bar Height (distance from top of window to bottom line of toolbar)
 		MenuItemWidth;		//Width of each item in toolbar menu
-	
 
+	bool filled;
 	color DrawColor;		//Drawing color
 	color FillColor;		//Filling color
 	color HighlightColor;	//Highlighting color
@@ -90,13 +78,9 @@ struct UI_Info	//User Interface Info.
 	int PenWidth;			//width of the pen that draws shapes
 
 	vector<color> colors;
-	vector<string> colorNames;
-	ColorSelectType colorSelectType;
-	int chosenColor;
 	int colorSide;
 	int numberOfColors;
 	/// Add more members if needed
-	
-}UI;	//create a global object UI
 
+}UI;	//create a global object UI
 #endif
